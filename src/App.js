@@ -12,7 +12,8 @@ class App extends React.Component {
     super(props)
     this.state = {
         'results' : [],
-        'page' : 0
+        'page' : 0,
+        'isLoading': false
     }
     this.currentState = this.currentState.bind(this)
     this.updateState = this.updateState.bind(this)
@@ -21,18 +22,19 @@ class App extends React.Component {
       Model.get().fork(log, this.updateState.bind(this))
   }
   updateState(state){
-      if(this.interval){
-          clearInterval(this.interval)
-      }
       this.setState({...state, page: this.state.page + 1, isLoading: false, dots: ''})
   }
   currentState(key){
       return this.state[key]
   }
 
-  dotProgress(){
-      this.setState({isLoading: true, dots: '.'})
-      this.interval = setInterval(() => this.setState({dots: this.state.dots + "."}), 500)
+  dotProgress(interval=200){
+      this.setState({isLoading: true});
+      let inc = (len=1) => {
+          this.setState({dots:'.'.repeat(len)})
+          setTimeout(() => { this.state.isLoading && inc(++len) }, interval)
+      };
+      inc();
   }
 
   fetch(){
@@ -52,6 +54,9 @@ class App extends React.Component {
   }
 
   render() {
+
+      console.log(this.state.isLoading);
+
       let buttonClass = 'LoadMore ' + (this.state.isLoading ? 'loading' : '')
       return (
           <div className="sw_app">

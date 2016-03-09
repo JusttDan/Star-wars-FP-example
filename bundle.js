@@ -33269,7 +33269,8 @@ var App = function (_React$Component) {
 
         _this.state = {
             'results': [],
-            'page': 0
+            'page': 0,
+            'isLoading': false
         };
         _this.currentState = _this.currentState.bind(_this);
         _this.updateState = _this.updateState.bind(_this);
@@ -33284,9 +33285,6 @@ var App = function (_React$Component) {
     }, {
         key: 'updateState',
         value: function updateState(state) {
-            if (this.interval) {
-                clearInterval(this.interval);
-            }
             this.setState(_extends({}, state, { page: this.state.page + 1, isLoading: false, dots: '' }));
         }
     }, {
@@ -33299,10 +33297,18 @@ var App = function (_React$Component) {
         value: function dotProgress() {
             var _this2 = this;
 
-            this.setState({ isLoading: true, dots: '.' });
-            this.interval = setInterval(function () {
-                return _this2.setState({ dots: _this2.state.dots + "." });
-            }, 500);
+            var interval = arguments.length <= 0 || arguments[0] === undefined ? 200 : arguments[0];
+
+            this.setState({ isLoading: true });
+            var inc = function inc() {
+                var len = arguments.length <= 0 || arguments[0] === undefined ? 1 : arguments[0];
+
+                _this2.setState({ dots: '.'.repeat(len) });
+                setTimeout(function () {
+                    _this2.state.isLoading && inc(++len);
+                }, interval);
+            };
+            inc();
         }
     }, {
         key: 'fetch',
@@ -33319,6 +33325,9 @@ var App = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
+
+            console.log(this.state.isLoading);
+
             var buttonClass = 'LoadMore ' + (this.state.isLoading ? 'loading' : '');
             return _react2.default.createElement(
                 'div',
