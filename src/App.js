@@ -9,14 +9,14 @@ const lensP = lensProp('results')
 
 class App extends React.Component {
   constructor(props) {
-    super(props)
-    this.state = {
-        'results' : [],
-        'page' : 0,
-        'isLoading': false
-    }
-    this.currentState = this.currentState.bind(this)
-    this.updateState = this.updateState.bind(this)
+      super(props)
+      this.state = {
+          'results' : [],
+          'page' : 0,
+          'isLoading': false
+      }
+      this.currentState = this.currentState.bind(this)
+      this.updateState = this.updateState.bind(this)
   }
   componentDidMount(){
       Model.get().fork(log, this.updateState.bind(this))
@@ -29,12 +29,12 @@ class App extends React.Component {
   }
 
   dotProgress(interval=200){
-      this.setState({isLoading: true});
+      this.setState({isLoading: true})
       let inc = (len=1) => {
           this.setState({dots:'.'.repeat(len)})
           setTimeout(() => { this.state.isLoading && inc(++len) }, interval)
-      };
-      inc();
+      }
+      inc()
   }
 
   fetch(){
@@ -50,35 +50,32 @@ class App extends React.Component {
   }
 
   loadText(){
-      return (this.state.isLoading ? 'Loading' + this.state.dots : 'Load More')
+        return (this.state.isLoading ? 'Loading' + this.state.dots : 'Load More')
   }
 
   render() {
-
-      console.log(this.state.isLoading);
-
-      let buttonClass = 'LoadMore ' + (this.state.isLoading ? 'loading' : '')
-      return (
-          <div className="sw_app">
-              {this.state.results.length === 0
-                  ? <h1>Loading...</h1>
-                  : <div>
-                      <h1>Star Wars Characters</h1>
-                        <ul>
-                          {this.state.results.map((cdata) =>
-                              <Character key={cdata.name} {...cdata} />
-                          )}
-                        </ul>
-                      {!!this.state.next &&
-                          <button
-                            className={buttonClass}
-                            onClick={this.fetch.bind(this)}>{this.loadText()}
-                          </button>
-                      }
-                  </div>
-              }
-          </div>
-      );
+        let buttonClass = 'LoadMore ' + (this.state.isLoading ? 'loading' : '')
+        return (
+            <div className="sw_app">
+                {this.state.results.length === 0
+                    ? <h1>Loading...</h1>
+                    : <div>
+                        <h1>Star Wars Characters</h1>
+                          <ul>
+                            {this.state.results.map((cdata) =>
+                                <Character key={cdata.name} {...cdata} />
+                            )}
+                          </ul>
+                        {!!this.state.next &&
+                            <button
+                              className={buttonClass}
+                              onClick={this.fetch.bind(this)}>{this.loadText()}
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+        );
   }
 
 }
